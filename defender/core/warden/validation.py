@@ -203,6 +203,10 @@ class AddHeatpoints(BaseModel):
     points: conint(gt=0, le=100)
     delta: HTimeDelta
 
+class BanAndDelete(BaseModel):
+    delete_days: int
+    reason: Optional[str]
+
 class MuteUser(BaseModel):
     reason: Optional[str]
     duration: Optional[TimeDelta]
@@ -373,6 +377,10 @@ class IsStr(BaseModel):
     _single_value = True
     value: str
 
+class IsOptionalStr(BaseModel):
+    _single_value = True
+    value: Optional[str]
+
 class IsRegex(IsStr):
     async def _runtime_check(self, *, cog, author: discord.Member, action_or_cond: Union[Action, Condition]):
         enabled: bool = await cog.config.wd_regex_allowed()
@@ -469,11 +477,11 @@ CONDITIONS_VALIDATORS = {
 
 ACTIONS_VALIDATORS = {
     Action.NotifyStaff: NotifyStaff,
-    Action.BanAndDelete: IsInt,
-    Action.Softban: IsNone,
-    Action.Kick: IsNone,
-    Action.PunishUser: IsNone,
-    Action.PunishUserWithMessage: IsNone,
+    Action.BanAndDelete: BanAndDelete,
+    Action.Softban: IsOptionalStr,
+    Action.Kick: IsOptionalStr,
+    Action.PunishUser: IsOptionalStr,
+    Action.PunishUserWithMessage: IsOptionalStr,
     Action.MuteUser: MuteUser,
     Action.ChannelMuteUser: MuteUser,
     Action.Modlog: IsStr,
