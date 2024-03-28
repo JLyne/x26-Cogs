@@ -256,6 +256,10 @@ class AddHeatpoints(BaseModel):
     points: conint(gt=0, le=100)
     delta: HTimeDelta
 
+class MuteUser(BaseModel):
+    reason: Optional[str]
+    duration: Optional[TimeDelta]
+    silent: Optional[bool]=False
 
 class IssueCommand(BaseModel):
     _short_form = ("issue_as", "command")
@@ -586,6 +590,8 @@ ACTIONS_VALIDATORS = {
     Action.Kick: IsNone,
     Action.PunishUser: IsNone,
     Action.PunishUserWithMessage: IsNone,
+    Action.MuteUser: MuteUser,
+    Action.ChannelMuteUser: MuteUser,
     Action.Timeout: IsOptionalTimeoutUserTimedelta,
     Action.Modlog: IsStr,
     Action.DeleteUserMessage: IsNone,
@@ -703,6 +709,7 @@ ACTIONS_USER_CONTEXT = [
     Action.Softban,
     Action.Kick,
     Action.PunishUser,
+    Action.MuteUser,
     Action.Timeout,
     Action.Modlog,
     Action.AddRolesToUser,
@@ -720,6 +727,7 @@ ACTIONS_MESSAGE_CONTEXT = [
     Action.AddChannelHeatpoints,
     Action.EmptyChannelHeat,
     Action.PunishUserWithMessage,
+    Action.ChannelMuteUser,
     Action.ArchiveThread,
     Action.LockThread,
     Action.ArchiveAndLockThread,

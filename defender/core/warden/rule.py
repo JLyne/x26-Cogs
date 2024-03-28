@@ -1182,6 +1182,38 @@ class WardenRule:
             reason = f"Timeout set by Warden action '{self.name}'"
             await user.timeout(params.value, reason=reason)
 
+        @processor(Action.MuteUser)
+        async def mute_user(params: models.MuteUser):
+            if user not in guild.members:
+                raise ExecutionError(f"User {user} ({user.id}) not in the server.")
+
+            reason = safe_sub(params.reason) if params.reason else f"Muted by Warden rule '{self.name}'"
+            mutes = cog.bot.get_cog("Mutes")
+            if mutes is None:
+                raise ExecutionError("mutes is not loaded. Integration not available.")
+
+            result = await mutes.mute_user(guild, user, duration=params.duration, reason=reason, silent=params.silent)
+
+            from redbot.cogs.mutes.models import MuteIssue
+            if not result.success and result.reason != MuteIssue.AlreadyMuted:
+                raise ExecutionError("mute failed: {}".format(result.get_reason_text()))
+
+        @processor(Action.ChannelMuteUser)
+        async def channel_mute_user(params: models.MuteUser):
+            if user not in guild.members:
+                raise ExecutionError(f"User {user} ({user.id}) not in the server.")
+
+            reason = safe_sub(params.reason) if params.reason else f"Channel muted by Warden rule '{self.name}'"
+            mutes = cog.bot.get_cog("Mutes")
+            if mutes is None:
+                raise ExecutionError("mutes is not loaded. Integration not available.")
+
+            result = await mutes.channel_mute_user(channel, user, duration=params.duration, reason=reason, silent=params.silent)
+
+            from redbot.cogs.mutes.models import MuteIssue
+            if not result.success and result.reason != MuteIssue.AlreadyMuted:
+                raise ExecutionError("channel mute failed: {}".format(result.get_reason_text()))
+
         @processor(Action.Modlog)
         async def send_mod_log(params: models.IsStr):
             if runtime.last_expel_action is None:
