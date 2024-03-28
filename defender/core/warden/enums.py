@@ -35,17 +35,19 @@ class Event(enum.Enum):
 
 class Action(enum.Enum):
     NotifyStaff = "notify-staff"
-    BanAndDelete = "ban-user-and-delete"  # Ban user in context and delete X days
-    Kick = "kick-user"  # Kick user in context
-    Softban = "softban-user"  # Softban user in context
-    PunishUser = "punish-user"  # Assign the punish role to the user
-    PunishUserWithMessage = "punish-user-with-message"  # Assign the punish role to the user and send the set message
+    BanAndDelete = "ban-user-and-delete" # Ban user in context and delete X days
+    Kick = "kick-user" # Kick user in context
+    Softban = "softban-user" # Softban user in context
+    PunishUser = "punish-user" # Assign the punish role to the user
+    PunishUserWithMessage = "punish-user-with-message" # Assign the punish role to the user and send the set message
     Timeout = "timeout-user"  # Timeout user in context
-    Modlog = "send-mod-log"  # Send modlog case of last expel action + reason
-    DeleteUserMessage = "delete-user-message"  # Delete message in context
-    SetChannelSlowmode = "set-channel-slowmode"  # 0 - 6h
-    AddRolesToUser = "add-roles-to-user"  # Adds roles to user in context
-    RemoveRolesFromUser = "remove-roles-from-user"  # Remove roles from user in context
+    MuteUser = "mute-user"
+    ChannelMuteUser = "channel-mute-user"
+    Modlog = "send-mod-log" # Send modlog case of last expel action + reason
+    DeleteUserMessage = "delete-user-message" # Delete message in context
+    SetChannelSlowmode = "set-channel-slowmode" # 0 - 6h
+    AddRolesToUser = "add-roles-to-user" # Adds roles to user in context
+    RemoveRolesFromUser = "remove-roles-from-user" # Remove roles from user in context
     EnableEmergencyMode = "enable-emergency-mode"
     SetUserNickname = "set-user-nickname"  # Changes nickname of user in context
     NoOp = "no-op"  # Does nothing. For testing purpose.
