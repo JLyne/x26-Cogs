@@ -38,6 +38,8 @@ class Action(enum.Enum):
     Softban = "softban-user" # Softban user in context
     PunishUser = "punish-user" # Assign the punish role to the user
     PunishUserWithMessage = "punish-user-with-message" # Assign the punish role to the user and send the set message
+    MuteUser = "mute-user"
+    ChannelMuteUser = "channel-mute-user"
     Modlog = "send-mod-log" # Send modlog case of last expel action + reason
     DeleteUserMessage = "delete-user-message" # Delete message in context
     SetChannelSlowmode = "set-channel-slowmode" # 0 - 6h
