@@ -1121,38 +1121,40 @@ class WardenRule:
             await user.edit(nick=value, reason=f"Changed nickname by Warden rule '{self.name}'")
 
         @processor(Action.BanAndDelete)
-        async def ban_and_delete(params: models.IsInt):
+        async def ban_and_delete(params: models.BanAndDelete):
             if user not in guild.members:
                 raise ExecutionError(f"User {user} ({user.id}) not in the server.")
-            reason = f"Banned by Warden rule '{self.name}'"
-            await guild.ban(user, delete_message_days=params.value, reason=reason)
+
+            reason = safe_sub(params.reason) if params.reason else f"Banned by Warden rule '{self.name}'"
+            await guild.ban(user, delete_message_days=params.delete_days, reason=reason)
             runtime.last_expel_action = ModAction.Ban
             cog.dispatch_event("member_remove", user, ModAction.Ban.value, reason)
 
         @processor(Action.Kick)
-        async def kick(params: models.IsNone):
+        async def kick(params: models.IsOptionalStr):
             if user not in guild.members:
                 raise ExecutionError(f"User {user} ({user.id}) not in the server.")
-            reason = f"Kicked by Warden action '{self.name}'"
+            reason = safe_sub(params.value) if params.value else f"Kicked by Warden rule '{self.name}'"
             await guild.kick(user, reason=reason)
             runtime.last_expel_action = ModAction.Kick
             cog.dispatch_event("member_remove", user, ModAction.Kick.value, reason)
 
         @processor(Action.Softban)
-        async def softban(params: models.IsNone):
+        async def softban(params: models.IsOptionalStr):
             if user not in guild.members:
                 raise ExecutionError(f"User {user} ({user.id}) not in the server.")
-            reason = f"Softbanned by Warden rule '{self.name}'"
+            reason = safe_sub(params.value) if params.value else f"Softbanned by Warden rule '{self.name}'"
             await guild.ban(user, delete_message_days=1, reason=reason)
             await guild.unban(user)
             runtime.last_expel_action = ModAction.Softban
             cog.dispatch_event("member_remove", user, ModAction.Softban.value, reason)
 
         @processor(Action.PunishUser)
-        async def punish_user(params: models.IsNone):
+        async def punish_user(params: models.IsOptionalStr):
             punish_role = guild.get_role(await cog.config.guild(guild).punish_role())
+            reason = safe_sub(params.value) if params.value else f"Punished by Warden rule '{self.name}'"
             if punish_role and not cog.is_role_privileged(punish_role):
-                await user.add_roles(punish_role, reason=f"Punished by Warden rule '{self.name}'")
+                await user.add_roles(punish_role, reason=reason)
             else:
                 cog.send_to_monitor(
                     guild,
@@ -1161,11 +1163,12 @@ class WardenRule:
                 )
 
         @processor(Action.PunishUserWithMessage)
-        async def punish_user_with_message(params: models.IsNone):
+        async def punish_user_with_message(params: models.IsOptionalStr):
             punish_role = guild.get_role(await cog.config.guild(guild).punish_role())
             punish_message = await cog.format_punish_message(user)
+            reason = safe_sub(params.value) if params.value else f"Punished by Warden rule '{self.name}'"
             if punish_role and not cog.is_role_privileged(punish_role):
-                await user.add_roles(punish_role, reason=f"Punished by Warden rule '{self.name}'")
+                await user.add_roles(punish_role, reason=reason)
                 if punish_message:
                     await channel.send(punish_message)
             else:
