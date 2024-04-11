@@ -96,6 +96,7 @@ class Condition(enum.Enum):
     UserHasAnyRoleIn = "user-has-any-role-in"
     MessageContainsInvite = "message-contains-invite"
     MessageContainsMedia = "message-contains-media"
+    MessageContainsPoll = "message-contains-poll" # Hack until discord.py has proper support
     MessageContainsUrl = "message-contains-url"
     MessageContainsMTMentions = "message-contains-more-than-mentions"
     MessageContainsMTUniqueMentions = "message-contains-more-than-unique-mentions"

@@ -733,6 +733,20 @@ class WardenRule:
             has_media = MEDIA_URL_RE.search(message.content)
             return bool(has_media) is params.value
 
+        @checker(Condition.MessageContainsPoll)
+        async def message_has_poll(params: models.IsBool):
+            # discord.py doesn't support polls right now,
+            # so assume any message with no content or anything else is a poll
+            return (bool(message.content) is params.value
+                    and bool(message.activity) is params.value
+                    and bool(message.application) is params.value
+                    and bool(message.attachments) is params.value
+                    and bool(message.components) is params.value
+                    and bool(message.embeds) is params.value
+                    and bool(message.flags) is params.value
+                    and bool(message.interaction) is params.value
+                    and bool(message.stickers) is params.value)
+
         @checker(Condition.MessageContainsUrl)
         async def message_contains_url(params: models.IsBool):
             has_url = URL_RE.search(message.content)
