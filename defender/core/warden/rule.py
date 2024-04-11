@@ -737,15 +737,15 @@ class WardenRule:
         async def message_has_poll(params: models.IsBool):
             # discord.py doesn't support polls right now,
             # so assume any message with no content or anything else is a poll
-            return (bool(message.content) is params.value
-                    and bool(message.activity) is params.value
-                    and bool(message.application) is params.value
-                    and bool(message.attachments) is params.value
-                    and bool(message.components) is params.value
-                    and bool(message.embeds) is params.value
-                    and bool(message.flags) is params.value
-                    and bool(message.interaction) is params.value
-                    and bool(message.stickers) is params.value)
+            return (bool(message.content) is not params.value
+                    and bool(message.activity) is not params.value
+                    and bool(message.application) is not params.value
+                    and bool(message.attachments) is not params.value
+                    and bool(message.components) is not params.value
+                    and bool(message.embeds) is not params.value
+                    and bool(message.flags) is not params.value
+                    and bool(message.interaction) is not params.value
+                    and bool(message.stickers) is not params.value)
 
         @checker(Condition.MessageContainsUrl)
         async def message_contains_url(params: models.IsBool):
